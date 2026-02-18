@@ -224,9 +224,41 @@ class ZNOrchestrator:
         )
 
     async def _execute_single_task(self, task: Dict) -> Any:
-        """Execute a single task with the appropriate agent."""
-        agent = self.agent_manager.get_agent(task.get("agent_type", "generic"))
-        return await agent.execute(task)
+        """Execute a single task with the appropriate agent, tracking metrics and memory."""
+        import time
+        agent_type = task.get("agent_type", "generic")
+        agent = self.agent_manager.get_agent(agent_type)
+        task_id = task.get("id", "unknown")
+
+        # Track execution in metrics
+        self.metrics.start_task(str(task_id), agent_type, task.get("description", "task"))
+        start_time = time.time()
+
+        try:
+            result = await agent.execute(task)
+            elapsed = time.time() - start_time
+            self.metrics.complete_task(str(task_id), success=True)
+
+            # Store result pattern in memory for learning
+            task_status = result.get("status", "unknown") if isinstance(result, dict) else "completed"
+            self.memory.store_memory(
+                agent_name=agent_type,
+                category="task_result",
+                key=str(task_id),
+                value={
+                    "description": task.get("description", ""),
+                    "status": task_status,
+                    "elapsed": elapsed,
+                },
+                success_rate=1.0 if task_status == "completed" else 0.5
+            )
+
+            return result
+
+        except Exception as e:
+            elapsed = time.time() - start_time
+            self.metrics.complete_task(str(task_id), success=False, error=str(e))
+            raise
 
     async def _phase_quality_check(
         self, 
@@ -257,23 +289,37 @@ class ZNOrchestrator:
         self.logger.info(f"✨ Workflow {context.workflow_id} completed")
     
     async def _request_board_approval(self, context: WorkflowContext) -> bool:
-        """طلب موافقة مجلس الإدارة"""
-        self.logger.info("🏛️ Requesting Board of Directors approval...")
-        
-        board_members = self.agent_manager.get_board_members()
-        if not board_members:
-            self.logger.warning("⚠️ No board members found, proceeding with default approval.")
+        """Request real Board of Directors review using BoardOfDirectors.review_workflow()."""
+        self.logger.info("🏛️ Requesting Board of Directors review...")
+
+        from src.board.directors import WorkflowProposal
+
+        # Build a real proposal from the workflow context
+        proposal = WorkflowProposal(
+            workflow_type=context.name,
+            complexity=context.metadata.get("complexity", 5),
+            agents_required=context.agents_involved,
+            estimated_duration_minutes=context.metadata.get("estimated_minutes", 60),
+            touches_external_services=context.metadata.get("touches_external", False),
+            touches_database=context.metadata.get("touches_database", False),
+        )
+
+        # Real board review with conditions (async)
+        decision = await self.board.review_workflow(proposal)
+        self.logger.info(
+            f"Board decision: {'approved' if decision.approved else 'rejected'} "
+            f"(director: {decision.director.value})"
+        )
+
+        if decision.approved:
+            # Store conditions in context for enforcement
+            context.metadata["board_conditions"] = decision.conditions
+            context.metadata["board_director"] = decision.director.value
             return True
-            
-        # Simulation of board voting
-        votes = []
-        for role, agent in board_members.items():
-            # In a real scenario, we would send the context to the agent
-            self.logger.info(f"Consulting {role}...")
-            # Assuming agents return a dict with 'approved' key, for now just mocking
-            votes.append(True) 
-            
-        return all(votes)
+        else:
+            self.logger.warning(f"❌ Board REJECTED workflow: {decision.reason}")
+            context.metadata["board_rejection_reason"] = decision.reason
+            return False
     
     def get_status(self, workflow_id: str) -> Optional[WorkflowContext]:
         """الحصول على حالة سير العمل"""
