@@ -1,88 +1,117 @@
-# Imperium Flow Architecture
+# System Architecture
 
-## System Overview
+Imperium Flow is designed as a modular, event-driven system leveraging the **Agentic Workflow** pattern. It separates orchestration logic from agent execution, ensuring scalability and resilience.
 
-Imperium Flow is a multi-agent orchestration system that uses AI agents to coordinate complex software development workflows with Board oversight, quality gates, and shared memory.
+## High-Level Overview
 
-## Architecture Diagram
+The system consists of three main layers:
+1. **Orchestration Layer**: Manages workflow state and task distribution (Conductor).
+2. **Agent Layer**: Specialized workers that execute tasks (CodeBot, TestBot, etc.).
+3. **Interface Layer**: Real-time dashboard and API for monitoring and control.
 
 ```mermaid
 graph TD
-    User["👤 User"] -->|Submit Task| Orchestrator["🎯 ZNOrchestrator"]
+    User[User / External System] -->|API Request| API[FastAPI Gateway]
+    User -->|WebSocket| Dashboard[Command Center]
     
-    Orchestrator -->|Review Request| Board["🏛️ Board of Directors"]
-    Board -->|Decision| Orchestrator
+    API -->|Start Workflow| Conductor[Conductor Server]
     
-    Orchestrator -->|Delegate| CodeBot["🤖 CodeBot"]
-    Orchestrator -->|Delegate| TestBot["🧪 TestBot"]
-    Orchestrator -->|Delegate| DesignBot["🎨 DesignBot"]
-    Orchestrator -->|Delegate| IntBot["🔌 IntegrationBot"]
+    subgraph "Imperium Core"
+        Orchestrator[Orchestrator Service]
+        exclude[Self-Healing Module]
+        Memory[Shared Memory Store]
+    end
     
-    CodeBot -->|Messages| Protocol["📡 MessageBus"]
-    TestBot -->|Messages| Protocol
-    DesignBot -->|Messages| Protocol
-    IntBot -->|Messages| Protocol
+    Conductor -->|Poll Tasks| Orchestrator
+    Orchestrator -->|Dispatch| Agents
     
-    Protocol -->|Route| Memory["🧠 Memory"]
-    Orchestrator -->|Track| Metrics["📊 Metrics"]
-    Orchestrator -->|Validate| QG["🔒 Quality Gates"]
+    subgraph "Agent Swarm"
+        CB[CodeBot]
+        TB[TestBot]
+        DB[DesignBot]
+        IB[IntegrationBot]
+    end
+    
+    Agents --> CB & TB & DB & IB
+    
+    CB & TB & DB & IB -->|Read/Write| Memory
+    CB & TB & DB & IB -->|Update Status| Conductor
+    
+    Orchestrator -->|Stream Events| Dashboard
 ```
 
-## Component Descriptions
+## Core Components
 
-### Core Systems
+### 1. Orchestrator (`src.core.orchestrator`)
+The central brain that polls Conductor for tasks and delegates them to the appropriate agents. It implements the **Board of Directors** pattern, where different "personalities" (CTO, CSO, Product Owner) review decisions.
 
-| Component | File | Purpose |
-|-----------|------|---------|
-| **Orchestrator** | `src/core/orchestrator.py` | Coordinates workflows, manages agents, enforces quality |
-| **Protocol** | `src/core/protocol.py` | Inter-agent messaging with priority queuing |
-| **Memory** | `src/core/memory.py` | Shared knowledge store with persistence |
-| **Metrics** | `src/core/metrics.py` | Performance tracking and dashboard |
-| **Quality Gates** | `src/core/quality_gates.py` | 6 real validators (coverage, complexity, security, type, lint, test) |
-| **Skills Registry** | `src/core/skills_registry.py` | Plugin system mapping agents to superpowers |
-| **Agent Manager** | `src/core/agent_manager.py` | Agent registration and retrieval |
+### 2. Agents (`src.agents`)
+Autonomous units with specific "Superpowers".
+- **CodeBot**: Generates and refactors code using LLMs.
+- **TestBot**: Writes and executes TDD cycles.
+- **DesignBot**: Handles UI/UX tasks.
+- **IntegrationBot**: Manages API integrations and deployments.
 
-### Agents
+### 3. Shared Memory (`src.core.memory`)
+A semantic knowledge store that allows agents to share context.
+- **Short-term**: Current workflow context.
+- **Long-term**: Learned patterns and successful strategies.
 
-| Agent | File | Skills | Role |
-|-------|------|--------|------|
-| **CodeBot** | `src/agents/codebot.py` | TDD, Security, CodeAnalysis, Refactoring | Code implementation |
-| **TestBot** | `src/agents/testbot.py` | TDD, CodeAnalysis, Debugging | Test generation |
-| **DesignBot** | `src/agents/designbot.py` | CodeAnalysis, WCAG Validation | UI design |
-| **IntegrationBot** | `src/agents/integrationbot.py` | Security, Debugging, Performance | External services |
+### 4. Self-Healing (`src.core.maintenance`)
+Monitors for deadlocks, timeouts, and failures. It can trigger retry strategies or escalate to human intervention.
 
-### Board of Directors
+## Workflow Execution Flow
 
-Routes decisions by complexity:
-- **COO** (1-3): Auto-approve simple tasks
-- **CPO** (4-6): Review features and UX
-- **CTO** (7-8): Review architecture and security
-- **Strategic Director** (9-10): Critical strategic decisions
-
-### Superpowers
-
-| Superpower | File | Capability |
-|------------|------|------------|
-| TDD Expert | `src/superpowers/tdd.py` | Real test execution with pytest |
-| Security Scanner | `src/superpowers/security.py` | SAST with pattern matching |
-| Code Analyzer | `src/superpowers/code_analysis.py` | AST-based complexity analysis |
-| Smart Planner | `src/superpowers/planning.py` | Task decomposition |
-| Debugger | `src/superpowers/debugging.py` | Systematic debugging |
-| Documentation | `src/superpowers/documentation.py` | Auto-doc generation |
-| Refactoring | `src/superpowers/refactoring.py` | Code smell detection |
-| Performance | `src/superpowers/performance.py` | Bottleneck analysis |
-
-## Workflow Lifecycle
+A typical "Feature Implementation" workflow follows this Red-Green-Refactor cycle:
 
 ```mermaid
-stateDiagram-v2
-    [*] --> PENDING
-    PENDING --> PLANNING: start
-    PLANNING --> EXECUTING: plan ready
-    EXECUTING --> QUALITY_CHECK: tasks done
-    QUALITY_CHECK --> COMPLETED: gates pass
-    QUALITY_CHECK --> EXECUTING: gates fail (retry)
-    EXECUTING --> FAILED: max retries
-    EXECUTING --> ABORTED: user abort
-    PLANNING --> ABORTED: user abort
+sequenceDiagram
+    participant User
+    participant Orch as Orchestrator
+    participant CB as CodeBot
+    participant TB as TestBot
+    participant Mem as Memory
+    
+    User->>Orch: Start Feature Workflow
+    Orch->>TB: Task: Write Failing Test in TDDExpert
+    TB->>Mem: Store Test Context
+    TB-->>Orch: Test Created (Red)
+    
+    Orch->>CB: Task: Implement Feature
+    CB->>Mem: Retrieve Test Context
+    CB->>CB: Generate Code
+    CB-->>Orch: Implementation Done
+    
+    Orch->>TB: Task: Run Tests
+    TB->>TB: Execute Pytest
+    alt Tests Pass
+        TB-->>Orch: Success (Green)
+        Orch->>CB: Task: Refactor
+    else Tests Fail
+        TB-->>Orch: Failure
+        Orch->>CB: Task: Fix Code
+    end
 ```
+
+## Directory Structure
+
+```plaintext
+Imperium-Flow/
+├── src/
+│   ├── agents/         # Specific agent implementations
+│   ├── core/           # Core logic (Orchestrator, Memory, Config)
+│   ├── dashboard/      # FastAPI + HTML/JS Dashboard
+│   ├── superpowers/    # Pluggable capabilities (TDD, Planning)
+│   └── main.py         # Entry point
+├── tests/              # Unit and Integration tests
+├── docs/               # Documentation
+└── ...
+```
+
+## Tech Stack
+
+- **Language**: Python 3.9+
+- **Orchestration**: Netflix Conductor (via `conductor-python`)
+- **Web Framework**: FastAPI (Dashboard & API)
+- **Frontend**: HTML5, TailwindCSS, Chart.js, WebSockets
+- **Containerization**: Docker & Docker Compose

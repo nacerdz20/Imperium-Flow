@@ -1,10 +1,21 @@
 # Imperium Flow ⚡
 
-![Imperium Flow Dashboard](/home/nacer_00/.gemini/antigravity/brain/71a5d329-8239-4315-a7ae-df51c16e061c/dashboard_top_1771424721397.png)
+![Imperium Flow Dashboard](docs/images/dashboard-desktop.png)
 
 > **Agentic Workflow Orchestrator & Command Center**
 >
 > An advanced system for orchestrating AI agents in complex workflows, featuring a real-time monitoring dashboard, TDD enforcement, and self-healing capabilities.
+
+---
+
+## 📚 Documentation
+
+Detailed documentation is available in the `docs/` directory or at our [Documentation Site](https://nacerdz20.github.io/Imperium-Flow/).
+
+- [**Architecture Overview**](docs/architecture.md): Understand the core design and flow.
+- [**Installation Guide**](docs/installation.md): Step-by-step setup instructions.
+- [**API Reference**](docs/api_reference.md): Interactive API docs details.
+- [**Contributing**](docs/contributing.md): How to get involved.
 
 ---
 
@@ -24,28 +35,29 @@
 ### Command Center (Desktop)
 A comprehensive view of system health, active tasks, and agent performance.
 
-![Desktop Dashboard](/home/nacer_00/.gemini/antigravity/brain/71a5d329-8239-4315-a7ae-df51c16e061c/dashboard_top_1771424721397.png)
+![Desktop Dashboard](docs/images/dashboard-desktop.png)
 
 ### Mobile & Light Mode
 Optimized for on-the-go monitoring with full theme support.
 
 | Mobile View | Light Mode |
 |-------------|------------|
-| ![Mobile View](/home/nacer_00/.gemini/antigravity/brain/71a5d329-8239-4315-a7ae-df51c16e061c/dashboard_mobile_view_final_1771425229716.png) | ![Light Mode](/home/nacer_00/.gemini/antigravity/brain/71a5d329-8239-4315-a7ae-df51c16e061c/dashboard_light_mode_1771425173962.png) |
+| ![Mobile View](docs/images/dashboard-mobile.png) | ![Light Mode](docs/images/dashboard-light.png) |
 
 ---
 
 ## 🚀 Getting Started
 
 ### Prerequisites
-- Python 3.8+
-- `pip`
+- **Python 3.8+**
+- **Docker & Docker Compose** (for Conductor server)
+- **Git**
 
 ### Installation
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/Startouf/Imperium-Flow.git
+   git clone https://github.com/nacerdz20/Imperium-Flow.git
    cd Imperium-Flow
    ```
 
@@ -58,7 +70,11 @@ Optimized for on-the-go monitoring with full theme support.
 3. **Install dependencies**
    ```bash
    pip install -r requirements.txt
-   pip install fastapi uvicorn  # For the dashboard
+   ```
+
+4. **Start Backend (Conductor)**
+   ```bash
+   docker-compose up -d
    ```
 
 ---
@@ -74,7 +90,17 @@ python3 -m uvicorn src.dashboard.app:app --host 0.0.0.0 --port 8090 --reload
 
 Open your browser at: **[http://localhost:8090](http://localhost:8090)**
 
-> **Note:** The dashboard uses WebSocket for live updates. Ensure you have `uvicorn[standard]` installed for best performance.
+---
+
+## ⚙️ Configuration (Brief)
+
+Create a `.env` file to configure the system. See [Configuration Guide](docs/configuration.md) for details.
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `CONDUCTOR_SERVER_URL` | Conductor API URL | `http://localhost:8080/api` |
+| `DASHBOARD_PORT` | Dashboard Port | `8090` |
+| `LOG_LEVEL` | Logging Level | `INFO` |
 
 ---
 
@@ -85,34 +111,13 @@ Imperium Flow maintains high code coverage (>94%) to ensure reliability.
 ```bash
 # Run all unit tests
 pytest tests/unit
-
-# Run specific test file
-pytest tests/unit/test_orchestrator.py
-
-# Check coverage
-pytest --cov=src tests/unit
 ```
-
----
-
-## 🏗️ Architecture Overview
-
-- **`src/core`**: The brain of the system. Contains the `Orchestrator`, `AgentManager`, `Memory`, and `WorkflowEngine`.
-- **`src/agents`**: Specialized AI agent implementations (`CodeBot`, `TestBot`, etc.).
-- **`src/dashboard`**: FastAPI backend and HTML/JS frontend for the Command Center.
-- **`src/superpowers`**: Pluggable capabilities like `TDDExpert` and `SmartPlanner`.
 
 ---
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please fork the repository and submit a Pull Request.
-
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+Contributions are welcome! Please fork the repository and submit a Pull Request. See [Contributing Guide](docs/contributing.md).
 
 ---
 

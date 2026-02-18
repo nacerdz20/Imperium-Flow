@@ -1,0 +1,59 @@
+site_name: Imperium Flow
+site_url: https://nacerdz20.github.io/Imperium-Flow/
+site_author: Eng. Zouaizia Nacer
+site_description: Agentic Workflow Orchestrator & Command Center Documentation
+repo_url: https://github.com/nacerdz20/Imperium-Flow
+repo_name: nacerdz20/Imperium-Flow
+edit_uri: edit/main/docs/
+
+theme:
+  name: material
+  palette: 
+    # Light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: cyan
+      accent: teal
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to dark mode
+    # Dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: cyan
+      accent: teal
+      toggle:
+        icon: material/weather-night
+        name: Switch to light mode
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.top
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+    - content.action.edit
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+  - attr_list
+  - md_in_html
+
+nav:
+  - Home: index.md
+  - Architecture: architecture.md
+  - Guides:
+    - Getting Started: getting_started.md
+    - Installation: installation.md
+    - Configuration: configuration.md
+    - Deployment: deployment.md
+  - API Reference: api_reference.md
+  - Contributing: contributing.md
