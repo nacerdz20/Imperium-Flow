@@ -6,14 +6,70 @@
         "category": "task_result",
         "key": "t1",
         "value": {
-          "description": "with gates",
+          "description": "board task",
           "status": "completed",
-          "elapsed": 0.0001068115234375
+          "elapsed": 0.00021338462829589844
         },
         "success_rate": 1.0,
         "access_count": 0,
-        "created_at": "2026-02-18T14:36:51.842732",
-        "last_accessed": "2026-02-18T14:36:51.842733"
+        "created_at": "2026-02-18T14:50:10.331556",
+        "last_accessed": "2026-02-18T14:50:10.331559"
+      },
+      "b1": {
+        "agent_name": "code_worker",
+        "category": "task_result",
+        "key": "b1",
+        "value": {
+          "description": "batch item 1",
+          "status": "completed",
+          "elapsed": 0.0002148151397705078
+        },
+        "success_rate": 1.0,
+        "access_count": 0,
+        "created_at": "2026-02-18T14:50:10.331562",
+        "last_accessed": "2026-02-18T14:50:10.331563"
+      },
+      "b2": {
+        "agent_name": "code_worker",
+        "category": "task_result",
+        "key": "b2",
+        "value": {
+          "description": "batch item 2",
+          "status": "completed",
+          "elapsed": 0.00020074844360351562
+        },
+        "success_rate": 1.0,
+        "access_count": 0,
+        "created_at": "2026-02-18T14:50:10.331564",
+        "last_accessed": "2026-02-18T14:50:10.331565"
+      },
+      "m1": {
+        "agent_name": "code_worker",
+        "category": "task_result",
+        "key": "m1",
+        "value": {
+          "description": "metrics test",
+          "status": "completed",
+          "elapsed": 0.00020384788513183594
+        },
+        "success_rate": 1.0,
+        "access_count": 0,
+        "created_at": "2026-02-18T14:50:10.331566",
+        "last_accessed": "2026-02-18T14:50:10.331567"
+      },
+      "mem1": {
+        "agent_name": "code_worker",
+        "category": "task_result",
+        "key": "mem1",
+        "value": {
+          "description": "memory test",
+          "status": "completed",
+          "elapsed": 0.0002014636993408203
+        },
+        "success_rate": 1.0,
+        "access_count": 0,
+        "created_at": "2026-02-18T14:50:10.331796",
+        "last_accessed": "2026-02-18T14:50:10.331796"
       }
     }
   }
