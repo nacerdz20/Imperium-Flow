@@ -1,0 +1,58 @@
+# إعدادات Zouaizia Nacer Orchestrator
+
+orchestrator:
+  name: "ZNOrchestrator"
+  version: "1.0.0"
+  max_parallel_agents: 5
+  default_timeout: 300  # ثواني
+  
+  logging:
+    level: INFO
+    format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  
+  conductor:
+    server_url: ${CONDUCTOR_SERVER_URL:http://localhost:8080}
+    api_key: ${CONDUCTOR_API_KEY:}
+  
+  quality_gates:
+    enabled: true
+    strict_mode: false
+    default_criteria:
+      - code_quality
+      - security_check
+      - performance_check
+
+agents:
+  orchestrator:
+    enabled: true
+    priority: 10
+    
+  workers:
+    code_analyzer:
+      enabled: true
+      skills: ["code_review", "static_analysis", "complexity_check"]
+      
+    parallel_executor:
+      enabled: true
+      max_workers: 5
+      
+    quality_gate:
+      enabled: true
+      auto_approve: false
+      
+  board:
+    cto:
+      enabled: true
+      role: "Chief Architect"
+    cpo:
+      enabled: true
+      role: "Chief Product Officer"
+    cso:
+      enabled: true
+      role: "Chief Security Officer"
+    coo:
+      enabled: true
+      role: "Chief Operations Officer"
+    cxo:
+      enabled: true
+      role: "Chief Experience Officer"
