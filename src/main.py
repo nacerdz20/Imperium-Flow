@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Zouaizia Nacer Orchestrator - Main Entry Point
+Imperium Flow - Main Entry Point
 starts the orchestrator and all workers.
 """
 
@@ -22,7 +22,7 @@ logging.basicConfig(
 logger = logging.getLogger("Main")
 
 def main():
-    logger.info("🚀 Starting Zouaizia Nacer Orchestrator...")
+    logger.info("🚀 Starting Imperium Flow...")
     
     # 0. Configuration
     base_url = "http://localhost:8080/api"

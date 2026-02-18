@@ -1,4 +1,4 @@
-# Contributing to Zouaizia Nacer Orchestrator
+# Contributing to Imperium Flow
 
 Thank you for your interest in contributing! We welcome contributions from the community to help make this agentic orchestrator even better.
 

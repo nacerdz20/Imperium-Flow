@@ -1,4 +1,4 @@
-# Zouaizia Nacer Orchestrator
+# Imperium Flow
 
 **An Agentic Workflow Orchestrator powered by Conductor OSS and AI Agents.**
 
@@ -8,7 +8,7 @@
 
 ## 🌟 Overview
 
-The **Zouaizia Nacer Orchestrator** is an intelligent system designed to automate complex software development tasks. It combines the robust workflow management of **Conductor OSS (Industrial-Grade Orchestration Engine)** with the adaptive intelligence of **AI Agents**.
+**Imperium Flow** is an intelligent system designed to automate complex software development tasks. It combines the robust workflow management of **Conductor OSS (Industrial-Grade Orchestration Engine)** with the adaptive intelligence of **AI Agents**.
 
 Unlike traditional automation scripts, this system uses a "Board of Directors" model where specialized agents (`CTO`, `Product`, `Code`, `QA`) collaborate to plan, execute, and verify work.
 
