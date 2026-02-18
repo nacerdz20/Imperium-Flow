@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """
-Zouaizia Nacer Orchestrator - Core Module
-Multi-Agent Orchestration System for Antigravity IDE
+Imperium Flow - Core Orchestration Engine
+Multi-Agent Orchestration System with Board Oversight,
+Imperium Protocol, Shared Memory, and Performance Metrics.
 """
 
 import asyncio
@@ -15,6 +16,9 @@ from enum import Enum
 from .workflow_engine import WorkflowEngine
 from .agent_manager import AgentManager
 from .quality_gates import QualityGateManager
+from .protocol import MessageBus, ImperiumMessage, AgentType, IntentType, Priority
+from .memory import ImperiumMemory
+from .metrics import ImperiumMetrics
 
 
 class WorkflowStatus(Enum):
@@ -43,25 +47,42 @@ class WorkflowContext:
 
 class ZNOrchestrator:
     """
-    المنسق الرئيسي لنظام Zouaizia Nacer
+    Imperium Flow - Core Orchestration Engine.
     
-    يدير:
-    - توزيع المهام على الوكلاء
-    - التنفيذ المتوازي
-    - بوابات الجودة
-    - التواصل مع Board of Directors
+    Manages:
+    - Task distribution to agents
+    - Parallel execution with DAG scheduling
+    - Quality gates enforcement
+    - Board of Directors oversight
+    - Inter-agent communication (Imperium Protocol)
+    - Shared knowledge (Imperium Memory)
+    - Performance tracking (Imperium Metrics)
     """
     
     def __init__(self, config: Optional[Dict] = None):
         self.config = config or {}
-        self.logger = logging.getLogger("ZNOrchestrator")
+        self.logger = logging.getLogger("ImperiumFlow")
+        
+        # Core Systems
         self.workflow_engine = WorkflowEngine()
         self.agent_manager = AgentManager()
         self.quality_manager = QualityGateManager()
+        
+        # Imperium Systems
+        self.message_bus = MessageBus()
+        self.memory = ImperiumMemory(
+            persistence_path=self.config.get("memory_path", ".imperium/memory.json")
+        )
+        self.metrics = ImperiumMetrics()
+        
+        # Board of Directors
+        from src.board.directors import BoardOfDirectors, WorkflowProposal
+        self.board = BoardOfDirectors()
+        
         self.active_workflows: Dict[str, WorkflowContext] = {}
         self.max_parallel_agents = 5
         
-        self.logger.info("🚀 ZNOrchestrator initialized")
+        self.logger.info("🚀 Imperium Flow Engine initialized")
     
     async def execute_workflow(
         self, 

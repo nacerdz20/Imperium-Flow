@@ -1,40 +1,50 @@
-# قواعد Zouaizia Nacer Orchestrator
+# Imperium Flow - Project Rules
 
-## 🎯 هوية المشروع
-- **الاسم**: Zouaizia Nacer Orchestrator
-- **النوع**: Multi-Agent Orchestration System
-- **المنصة**: Antigravity IDE + Conductor
+## 🎯 Project Identity
+- **Name**: Imperium Flow
+- **Type**: Agentic Workflow Orchestrator
+- **Engine**: Conductor OSS + AI Agents
+- **Author**: Eng. Zouaizia Nacer
 
-## 📐 المعايير المعمارية
+## 📐 Architectural Standards
 
-### 1. قواعد الكود
-- **الحد الأقصى للملف**: 300 سطر
-- **الحد الأقصى للدالة**: 50 سطر
-- **التسمية**: snake_case للملفات والدوال، PascalCase للكلاسات
-- **التوثيق**: Google Docstrings إلزامي
+### 1. Code Rules
+- **Max file length**: 300 lines
+- **Max function length**: 50 lines
+- **Naming**: snake_case for files/functions, PascalCase for classes
+- **Documentation**: Google Docstrings mandatory
+- **Logging**: Use `logging` module only, never `print()`
 
-### 2. قواعد الوكلاء
-- كل وكيل يجب أن يرث من `BaseAgent`
-- كل وكيل يجب أن يحدد `skills` واضحة
-- كل وكيل يجب أن يُعلن عن `constraints` (قيوده)
+### 2. Agent Rules
+- Every agent MUST inherit from `BaseAgent`
+- Every agent MUST declare its `skills` explicitly
+- Every agent MUST define `constraints` (operational limits)
+- CodeBot: MUST follow Red-Green-Refactor TDD protocol
+- TestBot: MUST achieve 90% coverage for core logic
+- DesignBot: MUST pass WCAG AA accessibility validation
+- IntegrationBot: MUST implement 3 error recovery strategies
 
-### 3. قواعد سير العمل
-- كل Workflow يجب أن يمر بـ 4 مراحل: Planning → Execution → Quality → Completion
-- التنفيذ المتوازي محدد بـ 5 وكلاء كحد أقصى
-- إلزامية Quality Gates قبل إنهاء أي مهمة
+### 3. Workflow Rules
+- Every Workflow passes through 4 phases: Planning → Execution → Quality → Completion
+- Parallel execution limited to 5 agents maximum
+- Quality Gates are MANDATORY before completion
+- Board approval required for complexity > 8
 
-### 4. قواعد التكامل
-- Conductor: استخدام الـ SDK الرسمي فقط
-- Claude Code: استخدام `/memory` للحفاظ على السياق
-- Git: commits وصفية مع Conventional Commits
+### 4. Imperium Protocol
+- All inter-agent communication uses `ImperiumMessage`
+- Messages have priority levels: LOW, MEDIUM, HIGH, CRITICAL
+- CRITICAL messages bypass queue and execute immediately
 
-### 5. قواعد الأمان
-- لا أسرار في الكود (استخدم `.env`)
-- التحقق من المدخلات في كل نقطة دخول
-- تسجيل جميع العمليات الحساسة
+### 5. Security Rules
+- No secrets in code (use `.env` files)
+- Validate all inputs at every entry point
+- Log all sensitive operations
+- Security scan required before any commit
 
-## 🚫 الممنوعات
-- لا استخدام `print()` (استخدم `logging`)
-- لا استدعاءات متزامنة في حلقات
-- لا تعديل مباشر لملفات `.antigravity/`
-- لا تجاوز Quality Gates تحت أي ظرف
+## 🚫 Prohibitions
+- No `print()` statements (use `logging`)
+- No synchronous calls within async loops
+- No direct modification of `.antigravity/` files
+- No bypassing Quality Gates under any circumstance
+- No hardcoded API keys or credentials
+- No commit without passing Security Scan

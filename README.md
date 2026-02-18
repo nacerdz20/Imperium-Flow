@@ -19,60 +19,129 @@ graph TD
     User[User] -->|Trigger| Main[src/main.py]
     Main -->|Polls| Conductor[Conductor Server]
     
-    subgraph "AI Workforce"
-        CodeBot[Code Worker]
-        TestBot[Test Worker]
-        DesignBot[UI Worker]
+    subgraph "Imperium Core"
+        Board[Board of Directors]
+        Protocol[Imperium Protocol]
+        Memory[Imperium Memory]
+        Metrics[Imperium Metrics]
     end
     
-    Conductor -->|Assigns Task| CodeBot
-    Conductor -->|Assigns Task| TestBot
+    subgraph "AI Workforce"
+        CodeBot[CodeBot - TDD]
+        TestBot[TestBot - QA]
+        DesignBot[DesignBot - UI]
+        IntBot[IntegrationBot - APIs]
+    end
     
-    CodeBot -->|Uses| Skills[Superpowers]
-    Skills -->|Includes| TDD[TDD Loop]
-    Skills -->|Includes| Security[Security Scan]
+    subgraph "Superpowers"
+        TDD[TDD Loop]
+        Security[Security Scan]
+        Docs[Documentation]
+        Refactor[Refactoring]
+        Perf[Performance]
+    end
+    
+    Conductor -->|Assigns Task| Board
+    Board -->|Approves| CodeBot
+    Board -->|Approves| TestBot
+    
+    CodeBot <-->|Messages| Protocol
+    TestBot <-->|Messages| Protocol
+    
+    CodeBot -->|Stores| Memory
+    TestBot -->|Stores| Memory
+    
+    CodeBot -->|Uses| TDD
+    CodeBot -->|Uses| Security
+    TestBot -->|Uses| Docs
+    
+    Metrics -->|Tracks| CodeBot
+    Metrics -->|Tracks| TestBot
 ```
+
+## 🏛️ Imperium Systems
+
+### Board of Directors (`src/board/directors.py`)
+Strategic oversight with complexity-based routing:
+| Complexity | Reviewer | Conditions |
+|-----------|----------|------------|
+| 1-3 | COO (Auto-approve) | None |
+| 4-6 | CPO | Progress report |
+| 7-8 | CTO | Daily checkpoints, code review |
+| 9-10 | Full Board | Rollback plan, security audit, post-mortem |
+
+### Imperium Protocol (`src/core/protocol.py`)
+Inter-agent communication with priority queuing:
+- **Priority Levels**: LOW → MEDIUM → HIGH → CRITICAL
+- **CRITICAL**: Bypasses queue, triggers immediate callback
+- **Intent Types**: REQUEST, NOTIFY, DELEGATE, REPORT, ESCALATE
+
+### Imperium Memory (`src/core/memory.py`)
+Shared knowledge store for continuous learning:
+- Per-agent memory with categories and keys
+- Cross-agent knowledge sharing
+- Success rate tracking (learning from outcomes)
+- Disk persistence for long-term retention
+
+### Imperium Metrics (`src/core/metrics.py`)
+Real-time performance dashboard:
+- Success rate per agent
+- Execution time tracking (avg, min, max)
+- Error frequency analysis
+- Task distribution visualization
 
 ## 🤖 AI Agents & Workers
 
-The system employs specialized workers, each with a distinct persona and operational protocol (defined in `src/config/worker_templates.py`):
-
-| Agent Name | Role | Focus |
-|------------|------|-------|
-| **CodeBot** | `CODE_WORKER` | Implements business logic using **TDD (Red-Green-Refactor)**. Strict adherence to commit protocols. |
-| **TestBot** | `TEST_WORKER` | QA Specialist. Writes unit/integration tests ensuring defined coverage targets (e.g., 90% for core logic). |
-| **DesignBot** | `UI_WORKER` | Frontend expert. Ensures accessibility (WCAG AA), responsive design, and design system compliance. |
-| **IntegrationBot** | `INTEGRATION_WORKER` | Handle API contracts, external services (Supabase, Stripe), and error recovery strategies. |
+| Agent | Role | Focus |
+|-------|------|-------|
+| **CodeBot** | `CODE_WORKER` | TDD (Red-Green-Refactor), commit protocols |
+| **TestBot** | `TEST_WORKER` | 90% coverage, edge cases, mocking |
+| **DesignBot** | `UI_WORKER` | WCAG AA accessibility, responsive |
+| **IntegrationBot** | `INTEGRATION_WORKER` | API contracts, error recovery |
 
 ## ⚡ Superpowers (Skills)
 
-Agents are equipped with dynamic skills located in `src/superpowers/`:
-
-- **🧠 Planning (`planning.py`)**: breakdowns complex requests into step-by-step implementation plans.
-- **🐞 Debugging (`debugging.py`)**: Systematic root cause analysis and fix generation.
-- **🛡️ Security (`security.py`)**: Basic SAST scanning for vulnerabilities before code is committed.
-- **🧪 TDD (`tdd.py`)**: Autonomous Test-Driven Development loop: *Write Test -> Fail -> Write Code -> Pass*.
-- **📊 Code Analysis (`code_analysis.py`)**: Cyclomatic complexity checks and linting.
+| Skill | Module | Capability |
+|-------|--------|------------|
+| 🧠 Planning | `planning.py` | Step-by-step implementation plans |
+| 🐞 Debugging | `debugging.py` | Root cause analysis & fix generation |
+| 🛡️ Security | `security.py` | SAST scanning for vulnerabilities |
+| 🧪 TDD | `tdd.py` | Autonomous Test-Driven Development |
+| 📊 Code Analysis | `code_analysis.py` | Complexity checks & linting |
+| 📝 Documentation | `documentation.py` | Auto-generated docs & diagrams |
+| ♻️ Refactoring | `refactoring.py` | Code smell detection & patterns |
+| ⚡ Performance | `performance.py` | Bottleneck detection & optimization |
 
 ## 📂 Project Structure
 
 ```text
-zouaizia-nacer-orchestrator/
-├── docker-compose.yml       # Infrastructure (Conductor, UI, Redis, Elastic)
+Imperium-Flow/
+├── .agent/                  # Agent Definitions (CodeBot, TestBot, etc.)
+├── .antigravity/            # IDE Rules & Standards
+├── .github/                 # Issue Templates & PR Templates
 ├── src/
 │   ├── main.py              # 🚀 System Entry Point
-│   ├── core/                # Core Orchestration Logic
-│   │   ├── orchestrator.py  # ZNOrchestrator Engine
-│   │   ├── agent_manager.py # Manages Agent Lifecycle
-│   │   └── llm.py           # Interface to LLM Providers
+│   ├── board/               # 🏛️ Board of Directors
+│   │   └── directors.py     # Strategic decision engine
+│   ├── core/                # Core Orchestration
+│   │   ├── orchestrator.py  # Imperium Flow Engine
+│   │   ├── protocol.py      # 📡 Inter-agent messaging
+│   │   ├── memory.py        # 🧠 Shared knowledge store
+│   │   ├── metrics.py       # 📊 Performance dashboard
+│   │   ├── agent_manager.py # Agent lifecycle
+│   │   └── workflow_engine.py # DAG scheduling
 │   ├── agents/              # Agent Implementations
-│   │   └── worker.py        # Generic WorkerAgent Class
+│   │   ├── base_agent.py    # Abstract base class
+│   │   └── worker.py        # WorkerAgent (Template-based)
 │   ├── integrations/        # External Systems
-│   │   ├── conductor_client.py # Conductor API Client
-│   │   └── conductor_worker.py # Bridge: Conductor Task -> Agent
-│   └── superpowers/         # ⚡ Pluggable Agent Skills
-├── tests/                   # Unit and Integration Tests
-└── config/                  # Configuration & Templates
+│   │   ├── conductor_client.py
+│   │   └── conductor_worker.py
+│   └── superpowers/         # ⚡ 8 Pluggable Skills
+├── tests/                   # Unit & Integration Tests
+├── config/                  # Configuration
+├── LICENSE                  # MIT License
+├── CONTRIBUTING.md          # Contribution Guide
+└── CODE_OF_CONDUCT.md       # Community Standards
 ```
 
 ## 🛠️ Installation & Setup
@@ -82,38 +151,31 @@ zouaizia-nacer-orchestrator/
 - Python 3.12+
 
 ### 1. Start Infrastructure
-Launch the Conductor stack. This spins up the Server, UI, Redis, and Elasticsearch.
-
 ```bash
 docker-compose up -d
 ```
-*Wait ~1 minute. Access the Conductor UI at [http://localhost:5000](http://localhost:5000).*
+*Access Conductor UI at [http://localhost:5000](http://localhost:5000)*
 
 ### 2. Python Environment
-Create and activate a virtual environment:
-
 ```bash
 python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### 3. Run the Orchestrator
-Start the system. This initializes the agents and begins polling Conductor for tasks.
-
+### 3. Run Imperium Flow
 ```bash
 PYTHONPATH=. python3 src/main.py
 ```
 
 ## 🧪 Verification
 
-To verify the "Bridge" logic (connection between Conductor and Agents) without a full workflow:
-
 ```bash
 python3 -m unittest tests/test_conductor_worker.py
 ```
 
-## � Contribution
+## 👥 Author & License
 
 - **Author**: Eng. Zouaizia Nacer
 - **License**: MIT
+- **Repository**: [github.com/nacerdz20/Imperium-Flow](https://github.com/nacerdz20/Imperium-Flow)
