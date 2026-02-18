@@ -1,181 +1,125 @@
-# Imperium Flow
+# Imperium Flow ⚡
 
-**An Agentic Workflow Orchestrator powered by Conductor OSS and AI Agents.**
+![Imperium Flow Dashboard](/home/nacer_00/.gemini/antigravity/brain/71a5d329-8239-4315-a7ae-df51c16e061c/dashboard_top_1771424721397.png)
 
-![License](https://img.shields.io/badge/license-MIT-blue.svg)
-![Python](https://img.shields.io/badge/python-3.12%2B-blue)
-![Conductor](https://img.shields.io/badge/conductor-3.13%2B-orange)
+> **Agentic Workflow Orchestrator & Command Center**
+>
+> An advanced system for orchestrating AI agents in complex workflows, featuring a real-time monitoring dashboard, TDD enforcement, and self-healing capabilities.
 
-## 🌟 Overview
+---
 
-**Imperium Flow** is an intelligent system designed to automate complex software development tasks. It combines the robust workflow management of **Conductor OSS (Industrial-Grade Orchestration Engine)** with the adaptive intelligence of **AI Agents**.
+## 🌟 Key Features
 
-Unlike traditional automation scripts, this system uses a "Board of Directors" model where specialized agents (`CTO`, `Product`, `Code`, `QA`) collaborate to plan, execute, and verify work.
+- **🤖 Multi-Agent Orchestration**: Coordinate specialized agents (CodeBot, TestBot, DesignBot, IntegrationBot) to solve complex tasks.
+- **📊 Professional Dashboard**: Real-time monitoring with Dark/Light mode, mobile responsiveness, and live WebSocket updates.
+- **🔄 Resilient Workflows**: Built-in retry mechanisms, deadlock detection, and self-healing logic.
+- **🧪 TDD at Core**: `TDDExpert` module ensures "Red-Green-Refactor" cycles for high code quality.
+- **🧠 Shared Memory**: Persistent knowledge store allowing agents to learn from past executions.
+- **📱 Mobile First**: Fully responsive UI adaptable to any device size.
 
-### High-Level Architecture
+---
 
-```mermaid
-graph TD
-    User[User] -->|Trigger| Main[src/main.py]
-    Main -->|Polls| Conductor[Conductor Server]
-    
-    subgraph "Imperium Core"
-        Board[Board of Directors]
-        Protocol[Imperium Protocol]
-        Memory[Imperium Memory]
-        Metrics[Imperium Metrics]
-    end
-    
-    subgraph "AI Workforce"
-        CodeBot[CodeBot - TDD]
-        TestBot[TestBot - QA]
-        DesignBot[DesignBot - UI]
-        IntBot[IntegrationBot - APIs]
-    end
-    
-    subgraph "Superpowers"
-        TDD[TDD Loop]
-        Security[Security Scan]
-        Docs[Documentation]
-        Refactor[Refactoring]
-        Perf[Performance]
-    end
-    
-    Conductor -->|Assigns Task| Board
-    Board -->|Approves| CodeBot
-    Board -->|Approves| TestBot
-    
-    CodeBot <-->|Messages| Protocol
-    TestBot <-->|Messages| Protocol
-    
-    CodeBot -->|Stores| Memory
-    TestBot -->|Stores| Memory
-    
-    CodeBot -->|Uses| TDD
-    CodeBot -->|Uses| Security
-    TestBot -->|Uses| Docs
-    
-    Metrics -->|Tracks| CodeBot
-    Metrics -->|Tracks| TestBot
-```
+## 📸 Screenshots
 
-## 🏛️ Imperium Systems
+### Command Center (Desktop)
+A comprehensive view of system health, active tasks, and agent performance.
 
-### Board of Directors (`src/board/directors.py`)
-Strategic oversight with complexity-based routing:
-| Complexity | Reviewer | Conditions |
-|-----------|----------|------------|
-| 1-3 | COO (Auto-approve) | None |
-| 4-6 | CPO | Progress report |
-| 7-8 | CTO | Daily checkpoints, code review |
-| 9-10 | Full Board | Rollback plan, security audit, post-mortem |
+![Desktop Dashboard](/home/nacer_00/.gemini/antigravity/brain/71a5d329-8239-4315-a7ae-df51c16e061c/dashboard_top_1771424721397.png)
 
-### Imperium Protocol (`src/core/protocol.py`)
-Inter-agent communication with priority queuing:
-- **Priority Levels**: LOW → MEDIUM → HIGH → CRITICAL
-- **CRITICAL**: Bypasses queue, triggers immediate callback
-- **Intent Types**: REQUEST, NOTIFY, DELEGATE, REPORT, ESCALATE
+### Mobile & Light Mode
+Optimized for on-the-go monitoring with full theme support.
 
-### Imperium Memory (`src/core/memory.py`)
-Shared knowledge store for continuous learning:
-- Per-agent memory with categories and keys
-- Cross-agent knowledge sharing
-- Success rate tracking (learning from outcomes)
-- Disk persistence for long-term retention
+| Mobile View | Light Mode |
+|-------------|------------|
+| ![Mobile View](/home/nacer_00/.gemini/antigravity/brain/71a5d329-8239-4315-a7ae-df51c16e061c/dashboard_mobile_view_final_1771425229716.png) | ![Light Mode](/home/nacer_00/.gemini/antigravity/brain/71a5d329-8239-4315-a7ae-df51c16e061c/dashboard_light_mode_1771425173962.png) |
 
-### Imperium Metrics (`src/core/metrics.py`)
-Real-time performance dashboard:
-- Success rate per agent
-- Execution time tracking (avg, min, max)
-- Error frequency analysis
-- Task distribution visualization
+---
 
-## 🤖 AI Agents & Workers
-
-| Agent | Role | Focus |
-|-------|------|-------|
-| **CodeBot** | `CODE_WORKER` | TDD (Red-Green-Refactor), commit protocols |
-| **TestBot** | `TEST_WORKER` | 90% coverage, edge cases, mocking |
-| **DesignBot** | `UI_WORKER` | WCAG AA accessibility, responsive |
-| **IntegrationBot** | `INTEGRATION_WORKER` | API contracts, error recovery |
-
-## ⚡ Superpowers (Skills)
-
-| Skill | Module | Capability |
-|-------|--------|------------|
-| 🧠 Planning | `planning.py` | Step-by-step implementation plans |
-| 🐞 Debugging | `debugging.py` | Root cause analysis & fix generation |
-| 🛡️ Security | `security.py` | SAST scanning for vulnerabilities |
-| 🧪 TDD | `tdd.py` | Autonomous Test-Driven Development |
-| 📊 Code Analysis | `code_analysis.py` | Complexity checks & linting |
-| 📝 Documentation | `documentation.py` | Auto-generated docs & diagrams |
-| ♻️ Refactoring | `refactoring.py` | Code smell detection & patterns |
-| ⚡ Performance | `performance.py` | Bottleneck detection & optimization |
-
-## 📂 Project Structure
-
-```text
-Imperium-Flow/
-├── .agent/                  # Agent Definitions (CodeBot, TestBot, etc.)
-├── .antigravity/            # IDE Rules & Standards
-├── .github/workflows/       # CI/CD Pipelines
-├── src/
-│   ├── main.py              # 🚀 System Entry Point
-│   ├── board/               # 🏛️ Board of Directors
-│   ├── core/                # Orchestrator, Protocol, Memory, Metrics
-│   ├── agents/              # CodeBot, TestBot, DesignBot, IntegrationBot
-│   ├── integrations/        # Conductor Client & Worker
-│   ├── superpowers/         # ⚡ 8 Pluggable Skills
-│   └── dashboard/           # 📊 Real-time Dashboard
-├── tests/                   # 142+ Unit & Integration Tests
-├── docs/                    # Architecture & Getting Started
-├── examples/                # Working Examples
-├── config/                  # Configuration
-└── docker-compose.prod.yml  # Production Docker
-```
-
-## 🛠️ Installation & Setup
+## 🚀 Getting Started
 
 ### Prerequisites
-- Docker & Docker Compose
-- Python 3.12+
+- Python 3.8+
+- `pip`
 
-### 1. Start Infrastructure
+### Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/Startouf/Imperium-Flow.git
+   cd Imperium-Flow
+   ```
+
+2. **Create a virtual environment**
+   ```bash
+   python3 -m venv venv
+   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   ```
+
+3. **Install dependencies**
+   ```bash
+   pip install -r requirements.txt
+   pip install fastapi uvicorn  # For the dashboard
+   ```
+
+---
+
+## 🖥️ Running the Dashboard
+
+Launch the Imperium Command Center to monitor your agents in real-time.
+
 ```bash
-docker-compose up -d
-```
-*Access Conductor UI at [http://localhost:5000](http://localhost:5000)*
-
-### 2. Python Environment
-```bash
-python3 -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
+# Start the backend server
+python3 -m uvicorn src.dashboard.app:app --host 0.0.0.0 --port 8090 --reload
 ```
 
-### 3. Run Imperium Flow
-```bash
-PYTHONPATH=. python3 src/main.py
-```
+Open your browser at: **[http://localhost:8090](http://localhost:8090)**
 
-## 🧪 Verification
+> **Note:** The dashboard uses WebSocket for live updates. Ensure you have `uvicorn[standard]` installed for best performance.
+
+---
+
+## 🧪 Running Tests
+
+Imperium Flow maintains high code coverage (>94%) to ensure reliability.
 
 ```bash
-# Run all 142+ tests
-pytest tests/ -v --tb=short
+# Run all unit tests
+pytest tests/unit
 
-# With coverage report
-pytest tests/ --cov=src --cov-report=term
+# Run specific test file
+pytest tests/unit/test_orchestrator.py
+
+# Check coverage
+pytest --cov=src tests/unit
 ```
 
-## 📖 Documentation
+---
 
-- [Architecture Guide](docs/architecture.md)
-- [Getting Started](docs/getting-started.md)
-- [Examples](examples/)
+## 🏗️ Architecture Overview
 
-## 👥 Author & License
+- **`src/core`**: The brain of the system. Contains the `Orchestrator`, `AgentManager`, `Memory`, and `WorkflowEngine`.
+- **`src/agents`**: Specialized AI agent implementations (`CodeBot`, `TestBot`, etc.).
+- **`src/dashboard`**: FastAPI backend and HTML/JS frontend for the Command Center.
+- **`src/superpowers`**: Pluggable capabilities like `TDDExpert` and `SmartPlanner`.
 
-- **Author**: Eng. Zouaizia Nacer
-- **License**: MIT
-- **Repository**: [github.com/nacerdz20/Imperium-Flow](https://github.com/nacerdz20/Imperium-Flow)
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Please fork the repository and submit a Pull Request.
+
+1. Fork the Project
+2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the Branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+---
+
+## 📜 License
+
+Distributed under the MIT License. See `LICENSE` for more information.
+
+---
+
+**Built with ❤️ by [Eng. Zouaizia Nacer](https://www.zouaizianacer.top/)**

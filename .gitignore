@@ -20,7 +20,15 @@ logs/
 .pytest_cache/
 .coverage
 htmlcov/
+test-results/
 
 # Project Specific
 output/
 downloads/
+dist/
+build/
+*.egg-info/
+
+# OS Specific
+.DS_Store
+Thumbs.db
