@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  conductor-server:
+    image: conductoross/conductor-server:latest
+    ports:
+      - "8080:8080"
+    environment:
+      - CONFIG_PROP=config.properties
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  imperium-flow:
+    build: .
+    environment:
+      - CONDUCTOR_SERVER_URL=http://conductor-server:8080
+      - IMPERIUM_ENV=production
+      - PYTHONUNBUFFERED=1
+    depends_on:
+      conductor-server:
+        condition: service_healthy
+    restart: unless-stopped
+    volumes:
+      - imperium-data:/app/data
+
+volumes:
+  imperium-data:

@@ -1,50 +1,44 @@
-# Imperium Flow - Project Rules
+# Imperium Flow - Antigravity Rules
 
 ## 🎯 Project Identity
 - **Name**: Imperium Flow
 - **Type**: Agentic Workflow Orchestrator
 - **Engine**: Conductor OSS + AI Agents
 - **Author**: Eng. Zouaizia Nacer
+- **Repository**: https://github.com/nacerdz20/Imperium-Flow
 
-## 📐 Architectural Standards
+## 📐 Core Principles
 
-### 1. Code Rules
-- **Max file length**: 300 lines
-- **Max function length**: 50 lines
-- **Naming**: snake_case for files/functions, PascalCase for classes
-- **Documentation**: Google Docstrings mandatory
-- **Logging**: Use `logging` module only, never `print()`
+### 1. Agent-First Development
+- كل ميزة تبدأ بتعريف الوكيل (`@agent define`)
+- كل وكيل يجب أن يكون له Skills واضحة
+- كل وكيل يجب أن يمر بـ Board Review
 
-### 2. Agent Rules
-- Every agent MUST inherit from `BaseAgent`
-- Every agent MUST declare its `skills` explicitly
-- Every agent MUST define `constraints` (operational limits)
-- CodeBot: MUST follow Red-Green-Refactor TDD protocol
-- TestBot: MUST achieve 90% coverage for core logic
-- DesignBot: MUST pass WCAG AA accessibility validation
-- IntegrationBot: MUST implement 3 error recovery strategies
+### 2. Test-Driven Development
+- لا كود بدون اختبار (TDD Red-Green-Refactor)
+- Coverage target: 90%+ for business logic
+- الاختبارات مستقلة وحتمية
 
-### 3. Workflow Rules
-- Every Workflow passes through 4 phases: Planning → Execution → Quality → Completion
-- Parallel execution limited to 5 agents maximum
-- Quality Gates are MANDATORY before completion
-- Board approval required for complexity > 8
+### 3. Workflow-Driven
+- لا تنفيذ بدون Workflow معرف
+- كل Workflow يمر بـ Board Review + Quality Gates
+- Smart Loop: Plan → Execute → Fail → Fix → Retry
 
-### 4. Imperium Protocol
-- All inter-agent communication uses `ImperiumMessage`
-- Messages have priority levels: LOW, MEDIUM, HIGH, CRITICAL
-- CRITICAL messages bypass queue and execute immediately
+### 4. Memory-Aware
+- تخزين كل قرار في Imperium Memory
+- استرجاع الأنماط الناجحة
+- تتبع Success Rate
 
-### 5. Security Rules
-- No secrets in code (use `.env` files)
-- Validate all inputs at every entry point
-- Log all sensitive operations
-- Security scan required before any commit
+### 5. Metrics-Driven
+- قياس كل شيء (execution time, success rate, errors)
+- Dashboard فوري
+- تحسين بناءً على البيانات
 
-## 🚫 Prohibitions
-- No `print()` statements (use `logging`)
-- No synchronous calls within async loops
-- No direct modification of `.antigravity/` files
-- No bypassing Quality Gates under any circumstance
-- No hardcoded API keys or credentials
-- No commit without passing Security Scan
+## 🚫 Hard Constraints
+- Max 300 lines per file
+- Max 50 lines per function
+- 90% test coverage for core logic
+- No commit without security scan
+- No bypassing Quality Gates
+- No hardcoded secrets
+- Conventional Commits format

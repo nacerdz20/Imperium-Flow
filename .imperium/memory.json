@@ -1,0 +1,20 @@
+{
+  "code_worker": {
+    "task_result": {
+      "t1": {
+        "agent_name": "code_worker",
+        "category": "task_result",
+        "key": "t1",
+        "value": {
+          "description": "with gates",
+          "status": "completed",
+          "elapsed": 0.0001068115234375
+        },
+        "success_rate": 1.0,
+        "access_count": 0,
+        "created_at": "2026-02-18T14:36:51.842732",
+        "last_accessed": "2026-02-18T14:36:51.842733"
+      }
+    }
+  }
+}

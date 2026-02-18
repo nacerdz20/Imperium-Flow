@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Imperium Flow - Dashboard</title>
+    <meta name="description" content="Real-time monitoring dashboard for Imperium Flow orchestration system">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0e1a;
+            --bg-secondary: #111827;
+            --bg-card: #1a1f35;
+            --bg-glass: rgba(26, 31, 53, 0.7);
+            --border: rgba(99, 115, 171, 0.2);
+            --text-primary: #e2e8f0;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --accent-blue: #3b82f6;
+            --accent-emerald: #10b981;
+            --accent-amber: #f59e0b;
+            --accent-rose: #f43f5e;
+            --accent-violet: #8b5cf6;
+            --gradient-blue: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            --gradient-green: linear-gradient(135deg, #10b981, #3b82f6);
+            --gradient-amber: linear-gradient(135deg, #f59e0b, #f43f5e);
+            --shadow-glow: 0 0 30px rgba(59, 130, 246, 0.15);
+            --radius: 16px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Background animation */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background:
+                radial-gradient(circle at 20% 20%, rgba(59, 130, 246, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(139, 92, 246, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(16, 185, 129, 0.03) 0%, transparent 50%);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* ── Header ── */
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(10, 14, 26, 0.85);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: var(--gradient-blue);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .status-badge {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.35rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .status-badge.connected {
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--accent-emerald);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .status-badge.disconnected {
+            background: rgba(244, 63, 94, 0.15);
+            color: var(--accent-rose);
+            border: 1px solid rgba(244, 63, 94, 0.3);
+        }
+
+        .pulse {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--accent-emerald);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.8); }
+        }
+
+        .header-time {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-variant-numeric: tabular-nums;
+        }
+
+        /* ── Main Layout ── */
+        .main {
+            position: relative;
+            z-index: 1;
+            padding: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* ── Metric Cards Grid ── */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .metric-card {
+            background: var(--bg-glass);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .metric-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            border-radius: var(--radius) var(--radius) 0 0;
+        }
+
+        .metric-card:nth-child(1)::before { background: var(--gradient-blue); }
+        .metric-card:nth-child(2)::before { background: var(--gradient-green); }
+        .metric-card:nth-child(3)::before { background: var(--gradient-amber); }
+        .metric-card:nth-child(4)::before { background: linear-gradient(135deg, var(--accent-violet), var(--accent-rose)); }
+
+        .metric-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-glow);
+            border-color: rgba(99, 115, 171, 0.4);
+        }
+
+        .metric-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            line-height: 1;
+            margin-bottom: 0.5rem;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .metric-sub {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .metric-icon {
+            position: absolute;
+            top: 1.2rem;
+            right: 1.2rem;
+            font-size: 1.5rem;
+            opacity: 0.6;
+        }
+
+        /* ── Panels Grid ── */
+        .panels-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .panel {
+            background: var(--bg-glass);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+        }
+
+        .panel-header {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .panel-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .panel-body {
+            padding: 1.5rem;
+        }
+
+        /* ── Agent Cards ── */
+        .agent-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .agent-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.75rem 1rem;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid transparent;
+            transition: var(--transition);
+        }
+
+        .agent-row:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: var(--border);
+        }
+
+        .agent-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .agent-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+        }
+
+        .agent-avatar.code { background: rgba(59, 130, 246, 0.2); }
+        .agent-avatar.test { background: rgba(16, 185, 129, 0.2); }
+        .agent-avatar.design { background: rgba(245, 158, 11, 0.2); }
+        .agent-avatar.integration { background: rgba(139, 92, 246, 0.2); }
+
+        .agent-name { font-weight: 500; font-size: 0.9rem; }
+        .agent-type { font-size: 0.75rem; color: var(--text-muted); }
+
+        .agent-stats {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .agent-stat {
+            text-align: right;
+        }
+
+        .agent-stat-value {
+            font-size: 0.9rem;
+            font-weight: 600;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .agent-stat-label {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        /* ── Progress Bar ── */
+        .progress-bar {
+            width: 80px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 0.5s ease;
+        }
+
+        .progress-fill.high { background: var(--accent-emerald); }
+        .progress-fill.med { background: var(--accent-amber); }
+        .progress-fill.low { background: var(--accent-rose); }
+
+        /* ── Error List ── */
+        .error-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .error-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.6rem 0.8rem;
+            border-radius: 8px;
+            background: rgba(244, 63, 94, 0.05);
+            border: 1px solid rgba(244, 63, 94, 0.1);
+            font-size: 0.85rem;
+        }
+
+        .error-name { color: var(--text-secondary); flex: 1; }
+
+        .error-count {
+            background: rgba(244, 63, 94, 0.15);
+            color: var(--accent-rose);
+            padding: 0.2rem 0.5rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        /* ── Empty State ── */
+        .empty-state {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .empty-state .emoji {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        /* ── Footer ── */
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            border-top: 1px solid var(--border);
+            margin-top: 2rem;
+        }
+
+        .footer a {
+            color: var(--accent-blue);
+            text-decoration: none;
+        }
+
+        /* ── Responsive ── */
+        @media (max-width: 768px) {
+            .main { padding: 1rem; }
+            .metrics-grid { grid-template-columns: 1fr 1fr; }
+            .panels-grid { grid-template-columns: 1fr; }
+            .metric-value { font-size: 1.8rem; }
+        }
+
+        @media (max-width: 480px) {
+            .metrics-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="header-left">
+            <span class="logo">⚡ Imperium Flow</span>
+            <div id="statusBadge" class="status-badge disconnected">
+                <span class="pulse" id="pulseIndicator"></span>
+                <span id="statusText">Connecting…</span>
+            </div>
+        </div>
+        <span class="header-time" id="headerTime">--:--:--</span>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+
+        <!-- Metric Cards -->
+        <section class="metrics-grid" id="metricsGrid">
+            <div class="metric-card">
+                <span class="metric-icon">📊</span>
+                <div class="metric-label">Total Tasks</div>
+                <div class="metric-value" id="totalTasks">0</div>
+                <div class="metric-sub" id="activeTasks">0 active</div>
+            </div>
+            <div class="metric-card">
+                <span class="metric-icon">✅</span>
+                <div class="metric-label">Success Rate</div>
+                <div class="metric-value" id="successRate">0%</div>
+                <div class="metric-sub" id="successDetail">0 passed / 0 total</div>
+            </div>
+            <div class="metric-card">
+                <span class="metric-icon">⚠️</span>
+                <div class="metric-label">Errors</div>
+                <div class="metric-value" id="totalErrors">0</div>
+                <div class="metric-sub" id="errorDetail">No errors</div>
+            </div>
+            <div class="metric-card">
+                <span class="metric-icon">🤖</span>
+                <div class="metric-label">Active Agents</div>
+                <div class="metric-value" id="activeAgents">0</div>
+                <div class="metric-sub" id="agentDetail">No agents</div>
+            </div>
+        </section>
+
+        <!-- Panels -->
+        <section class="panels-grid">
+
+            <!-- Agent Performance -->
+            <div class="panel">
+                <div class="panel-header">
+                    <span class="panel-title">🤖 Agent Performance</span>
+                </div>
+                <div class="panel-body">
+                    <div class="agent-list" id="agentList">
+                        <div class="empty-state">
+                            <span class="emoji">🔄</span>
+                            Waiting for agent data…
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Top Errors -->
+            <div class="panel">
+                <div class="panel-header">
+                    <span class="panel-title">🔴 Top Errors</span>
+                </div>
+                <div class="panel-body">
+                    <div class="error-list" id="errorList">
+                        <div class="empty-state">
+                            <span class="emoji">🎉</span>
+                            No errors detected!
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        Imperium Flow v1.0 — Built by <a href="https://www.zouaizianacer.top/" target="_blank">Eng. Zouaizia Nacer</a>
+    </footer>
+
+    <script>
+        // ── State ─────────────────────────────
+        let ws = null;
+        let reconnectTimer = null;
+
+        // ── DOM References ────────────────────
+        const statusBadge = document.getElementById('statusBadge');
+        const statusText = document.getElementById('statusText');
+        const pulseIndicator = document.getElementById('pulseIndicator');
+        const headerTime = document.getElementById('headerTime');
+
+        // ── Clock ─────────────────────────────
+        setInterval(() => {
+            headerTime.textContent = new Date().toLocaleTimeString('en-US', { hour12: false });
+        }, 1000);
+
+        // ── WebSocket ─────────────────────────
+        function connect() {
+            const protocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            ws = new WebSocket(`${protocol}//${location.host}/ws`);
+
+            ws.onopen = () => {
+                statusBadge.className = 'status-badge connected';
+                statusText.textContent = 'Live';
+                pulseIndicator.style.background = 'var(--accent-emerald)';
+            };
+
+            ws.onclose = () => {
+                statusBadge.className = 'status-badge disconnected';
+                statusText.textContent = 'Disconnected';
+                pulseIndicator.style.background = 'var(--accent-rose)';
+                reconnectTimer = setTimeout(connect, 3000);
+            };
+
+            ws.onmessage = (event) => {
+                try {
+                    const data = JSON.parse(event.data);
+                    updateDashboard(data);
+                } catch (e) {
+                    console.error('Parse error:', e);
+                }
+            };
+        }
+
+        // ── Fallback: REST Polling ────────────
+        async function pollDashboard() {
+            try {
+                const res = await fetch('/api/dashboard');
+                const data = await res.json();
+                updateDashboard(data);
+            } catch { /* silent */ }
+        }
+
+        // ── Update UI ─────────────────────────
+        function updateDashboard(data) {
+            const overview = data.overview || {};
+            const agents = data.agents || {};
+            const topErrors = data.top_errors || [];
+
+            // Metric cards
+            document.getElementById('totalTasks').textContent = overview.total_tasks || 0;
+            document.getElementById('activeTasks').textContent = `${Object.keys(agents).length} agents`;
+
+            const rate = overview.success_rate || 0;
+            document.getElementById('successRate').textContent = `${(rate * 100).toFixed(0)}%`;
+            document.getElementById('successDetail').textContent =
+                `${overview.total_success || 0} passed / ${overview.total_tasks || 0} total`;
+
+            const totalErrors = topErrors.reduce((s, e) => s + (e[1] || 0), 0);
+            document.getElementById('totalErrors').textContent = totalErrors;
+            document.getElementById('errorDetail').textContent =
+                totalErrors ? `${topErrors.length} error types` : 'No errors';
+
+            document.getElementById('activeAgents').textContent = Object.keys(agents).length;
+            document.getElementById('agentDetail').textContent =
+                Object.keys(agents).length
+                    ? Object.keys(agents).join(', ')
+                    : 'No agents';
+
+            // Agent list
+            updateAgentList(agents);
+
+            // Error list
+            updateErrorList(topErrors);
+        }
+
+        function updateAgentList(agents) {
+            const container = document.getElementById('agentList');
+            const entries = Object.entries(agents);
+            if (!entries.length) {
+                container.innerHTML = '<div class="empty-state"><span class="emoji">🔄</span>Waiting for agent data…</div>';
+                return;
+            }
+
+            container.innerHTML = entries.map(([name, stats]) => {
+                const rate = stats.success_rate || 0;
+                const rateClass = rate >= 0.8 ? 'high' : rate >= 0.5 ? 'med' : 'low';
+                const avatarMap = {
+                    'codebot': 'code', 'testbot': 'test',
+                    'designbot': 'design', 'integrationbot': 'integration'
+                };
+                const avatarClass = avatarMap[name.toLowerCase()] || 'code';
+                const iconMap = {
+                    'codebot': '🤖', 'testbot': '🧪',
+                    'designbot': '🎨', 'integrationbot': '🔌'
+                };
+                const icon = iconMap[name.toLowerCase()] || '⚙️';
+
+                return `
+                    <div class="agent-row">
+                        <div class="agent-info">
+                            <div class="agent-avatar ${avatarClass}">${icon}</div>
+                            <div>
+                                <div class="agent-name">${name}</div>
+                                <div class="agent-type">${stats.total_tasks || 0} tasks</div>
+                            </div>
+                        </div>
+                        <div class="agent-stats">
+                            <div class="agent-stat">
+                                <div class="agent-stat-value">${(rate * 100).toFixed(0)}%</div>
+                                <div class="agent-stat-label">Success</div>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill ${rateClass}" style="width: ${rate * 100}%"></div>
+                            </div>
+                        </div>
+                    </div>`;
+            }).join('');
+        }
+
+        function updateErrorList(errors) {
+            const container = document.getElementById('errorList');
+            if (!errors.length) {
+                container.innerHTML = '<div class="empty-state"><span class="emoji">🎉</span>No errors detected!</div>';
+                return;
+            }
+
+            container.innerHTML = errors.map(([name, count]) => `
+                <div class="error-row">
+                    <span class="error-name">${name}</span>
+                    <span class="error-count">${count}</span>
+                </div>
+            `).join('');
+        }
+
+        // ── Init ──────────────────────────────
+        connect();
+        setInterval(pollDashboard, 5000);
+        pollDashboard();
+    </script>
+</body>
+</html>

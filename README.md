@@ -118,30 +118,20 @@ Real-time performance dashboard:
 Imperium-Flow/
 ├── .agent/                  # Agent Definitions (CodeBot, TestBot, etc.)
 ├── .antigravity/            # IDE Rules & Standards
-├── .github/                 # Issue Templates & PR Templates
+├── .github/workflows/       # CI/CD Pipelines
 ├── src/
 │   ├── main.py              # 🚀 System Entry Point
 │   ├── board/               # 🏛️ Board of Directors
-│   │   └── directors.py     # Strategic decision engine
-│   ├── core/                # Core Orchestration
-│   │   ├── orchestrator.py  # Imperium Flow Engine
-│   │   ├── protocol.py      # 📡 Inter-agent messaging
-│   │   ├── memory.py        # 🧠 Shared knowledge store
-│   │   ├── metrics.py       # 📊 Performance dashboard
-│   │   ├── agent_manager.py # Agent lifecycle
-│   │   └── workflow_engine.py # DAG scheduling
-│   ├── agents/              # Agent Implementations
-│   │   ├── base_agent.py    # Abstract base class
-│   │   └── worker.py        # WorkerAgent (Template-based)
-│   ├── integrations/        # External Systems
-│   │   ├── conductor_client.py
-│   │   └── conductor_worker.py
-│   └── superpowers/         # ⚡ 8 Pluggable Skills
-├── tests/                   # Unit & Integration Tests
+│   ├── core/                # Orchestrator, Protocol, Memory, Metrics
+│   ├── agents/              # CodeBot, TestBot, DesignBot, IntegrationBot
+│   ├── integrations/        # Conductor Client & Worker
+│   ├── superpowers/         # ⚡ 8 Pluggable Skills
+│   └── dashboard/           # 📊 Real-time Dashboard
+├── tests/                   # 142+ Unit & Integration Tests
+├── docs/                    # Architecture & Getting Started
+├── examples/                # Working Examples
 ├── config/                  # Configuration
-├── LICENSE                  # MIT License
-├── CONTRIBUTING.md          # Contribution Guide
-└── CODE_OF_CONDUCT.md       # Community Standards
+└── docker-compose.prod.yml  # Production Docker
 ```
 
 ## 🛠️ Installation & Setup
@@ -171,8 +161,18 @@ PYTHONPATH=. python3 src/main.py
 ## 🧪 Verification
 
 ```bash
-python3 -m unittest tests/test_conductor_worker.py
+# Run all 142+ tests
+pytest tests/ -v --tb=short
+
+# With coverage report
+pytest tests/ --cov=src --cov-report=term
 ```
+
+## 📖 Documentation
+
+- [Architecture Guide](docs/architecture.md)
+- [Getting Started](docs/getting-started.md)
+- [Examples](examples/)
 
 ## 👥 Author & License
 

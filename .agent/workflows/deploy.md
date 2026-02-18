@@ -4,31 +4,21 @@ description: Deploy Imperium Flow to production (Docker Compose + Conductor)
 
 # Deploy Workflow
 
+## Prerequisites
+- Docker and Docker Compose installed
+- Environment variables configured in `.env`
+
 ## Steps
 
-// turbo-all
+// turbo
+1. Run tests before deployment: `cd "/home/nacer_00/Documents/cloude ai agent/Imperium-Flow" && python3 -m pytest tests/ -v --tb=short`
 
-1. Verify all tests pass before deploying:
-```bash
-cd /home/nacer_00/Documents/cloude\ ai\ agent/zouaizia-nacer-orchestrator && python3 -m pytest tests/ -v
-```
+2. Verify Docker Compose config: `cd "/home/nacer_00/Documents/cloude ai agent/Imperium-Flow" && docker-compose config`
 
-2. Build and start Docker containers:
-```bash
-cd /home/nacer_00/Documents/cloude\ ai\ agent/zouaizia-nacer-orchestrator && docker compose up -d
-```
+3. Build and start the stack: `cd "/home/nacer_00/Documents/cloude ai agent/Imperium-Flow" && docker-compose up -d --build`
 
-3. Verify Conductor Server is running:
-```bash
-curl -s http://localhost:8080/api/health | python3 -m json.tool
-```
+4. Verify services are running: `docker-compose ps`
 
-4. Verify Conductor UI is accessible:
-```bash
-curl -s -o /dev/null -w "%{http_code}" http://localhost:5000
-```
+5. Check Conductor health: `curl -s http://localhost:8080/health | head -5`
 
-5. Start the Imperium Flow orchestrator:
-```bash
-cd /home/nacer_00/Documents/cloude\ ai\ agent/zouaizia-nacer-orchestrator && python3 -m src.main
-```
+6. Check application logs: `docker-compose logs --tail=20 imperium-flow`

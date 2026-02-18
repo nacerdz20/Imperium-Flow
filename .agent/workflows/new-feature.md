@@ -1,54 +1,38 @@
 ---
-description: Create a new feature using the Imperium Flow TDD workflow
+description: Implement a new feature using Test-Driven Development
 ---
 
-# New Feature Workflow
+# TDD Workflow
 
 ## Steps
 
-1. Create a branch for the feature:
-```bash
-cd /home/nacer_00/Documents/cloude\ ai\ agent/zouaizia-nacer-orchestrator && git checkout -b feature/<feature-name>
-```
-
-2. Write the failing test first (RED phase):
-   - Create `tests/test_<feature>.py`
-   - Write tests covering: happy path, edge cases, error cases
-   - Run and verify they FAIL:
-```bash
-cd /home/nacer_00/Documents/cloude\ ai\ agent/zouaizia-nacer-orchestrator && python3 -m pytest tests/test_<feature>.py -v
-```
-
-3. Write the minimal implementation (GREEN phase):
-   - Create `src/<module>/<feature>.py`
-   - Write the MINIMUM code to make tests pass
-   - Run and verify they PASS:
+1. **Analyze requirements** — understand the feature and define acceptance criteria
 // turbo
-```bash
-cd /home/nacer_00/Documents/cloude\ ai\ agent/zouaizia-nacer-orchestrator && python3 -m pytest tests/test_<feature>.py -v
-```
+2. Run existing tests to establish baseline: `cd "/home/nacer_00/Documents/cloude ai agent/Imperium-Flow" && python3 -m pytest tests/ -v --tb=short`
 
-4. Refactor the code (REFACTOR phase):
-   - Improve naming, add type hints, add docstrings
-   - Verify tests still pass:
+3. **RED Phase** — write failing test first
+   - Create test file in `tests/unit/`
+   - Define test functions covering: happy path, edge cases, error cases
+   - Use Arrange-Act-Assert pattern
+
 // turbo
-```bash
-cd /home/nacer_00/Documents/cloude\ ai\ agent/zouaizia-nacer-orchestrator && python3 -m pytest tests/test_<feature>.py -v
-```
+4. Run tests to confirm they fail: `cd "/home/nacer_00/Documents/cloude ai agent/Imperium-Flow" && python3 -m pytest tests/ -v --tb=short`
 
-5. Run security scan:
+5. **GREEN Phase** — write minimum code to pass
+   - Implement in `src/` matching the test expectations
+   - Do NOT add features not covered by tests
+
 // turbo
-```bash
-cd /home/nacer_00/Documents/cloude\ ai\ agent/zouaizia-nacer-orchestrator && python3 -c "from src.superpowers.security import SecurityScanner; s = SecurityScanner(); print(s.scan_file('src/<module>/<feature>.py'))"
-```
+6. Run tests to confirm they pass: `cd "/home/nacer_00/Documents/cloude ai agent/Imperium-Flow" && python3 -m pytest tests/ -v --tb=short`
 
-6. Run full test suite to ensure no regressions:
+7. **REFACTOR Phase** — improve quality
+   - Clean up duplication, improve naming
+   - Add type hints and docstrings
+   - Max complexity: 10, max file length: 300 lines
+
 // turbo
-```bash
-cd /home/nacer_00/Documents/cloude\ ai\ agent/zouaizia-nacer-orchestrator && python3 -m pytest tests/ -v
-```
+8. Run tests to confirm still green: `cd "/home/nacer_00/Documents/cloude ai agent/Imperium-Flow" && python3 -m pytest tests/ -v --tb=short`
 
-7. Commit with Conventional Commit message:
-```bash
-cd /home/nacer_00/Documents/cloude\ ai\ agent/zouaizia-nacer-orchestrator && git add -A && git commit -m "feat(<scope>): <description>"
-```
+9. **Security scan** — check for vulnerabilities in new code
+
+10. **Commit** using conventional commits format
