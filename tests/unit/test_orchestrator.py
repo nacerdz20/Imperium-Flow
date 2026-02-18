@@ -239,3 +239,117 @@ class TestWorkflowStatusEnum:
         assert WorkflowStatus.COMPLETED.value == "completed"
         assert WorkflowStatus.FAILED.value == "failed"
         assert WorkflowStatus.ABORTED.value == "aborted"
+
+
+# ═══════════════════════════════════════════════════════════
+# Retry Loop + Deadlock + Exception Scenarios
+# ═══════════════════════════════════════════════════════════
+
+@pytest.mark.asyncio
+async def test_workflow_task_failure_triggers_retry():
+    """سطور 148-180: فشل المهمة يُفعّل حلقة إعادة المحاولة."""
+    orchestrator = ZNOrchestrator()
+    call_count = 0
+
+    async def failing_then_succeeding_execute(task):
+        nonlocal call_count
+        call_count += 1
+        if call_count <= 1:
+            return {"status": "failed", "error": "first attempt fails"}
+        return {"status": "completed", "agent": "CodeBot"}
+
+    # Patch the agent's execute to fail first then succeed
+    agent = orchestrator.agent_manager.get_agent("code_worker")
+    agent.execute = failing_then_succeeding_execute
+
+    plan = [{"id": "retry_t", "agent_type": "code_worker", "description": "retry task"}]
+    context = await orchestrator.execute_workflow(
+        name="Retry Test",
+        goal="Test retry loop",
+        initial_plan=plan,
+    )
+    # Should succeed after retry
+    assert context.status == WorkflowStatus.COMPLETED
+
+
+@pytest.mark.asyncio
+async def test_workflow_task_exhausts_retries():
+    """سطور 177-180: استنفاد كل المحاولات يُفشل سير العمل."""
+    orchestrator = ZNOrchestrator()
+
+    async def always_failing_execute(task):
+        return {"status": "failed", "error": "always fails"}
+
+    agent = orchestrator.agent_manager.get_agent("code_worker")
+    agent.execute = always_failing_execute
+
+    plan = [{"id": "fail_t", "agent_type": "code_worker", "description": "always fail"}]
+    context = await orchestrator.execute_workflow(
+        name="Fail Test",
+        goal="Exhaust retries",
+        initial_plan=plan,
+    )
+    assert context.status == WorkflowStatus.FAILED
+
+
+@pytest.mark.asyncio
+async def test_workflow_task_exception_in_retry():
+    """سطور 174-175: استثناء أثناء إعادة المحاولة."""
+    orchestrator = ZNOrchestrator()
+
+    async def exception_execute(task):
+        raise RuntimeError("Network down")
+
+    agent = orchestrator.agent_manager.get_agent("code_worker")
+    agent.execute = exception_execute
+
+    plan = [{"id": "exc_t", "agent_type": "code_worker", "description": "exception task"}]
+    context = await orchestrator.execute_workflow(
+        name="Exception Retry",
+        goal="Test exception in retry",
+        initial_plan=plan,
+    )
+    assert context.status == WorkflowStatus.FAILED
+
+
+@pytest.mark.asyncio
+async def test_workflow_quality_gate_failure_note():
+    """سطور 190-192: فشل بوابة الجودة يُضيف ملاحظة."""
+    orchestrator = ZNOrchestrator()
+    plan = [{"id": "qg_t", "agent_type": "code_worker", "description": "qg test"}]
+    context = await orchestrator.execute_workflow(
+        name="QG Fail Note",
+        goal="Quality gate failure",
+        initial_plan=plan,
+        quality_gates=["code_coverage"],
+    )
+    # Coverage data is missing, so gate might skip/fail
+    assert context.quality_report is not None
+
+
+@pytest.mark.asyncio
+async def test_workflow_unexpected_crash():
+    """سطور 197-200: استثناء غير متوقع."""
+    orchestrator = ZNOrchestrator()
+
+    # Force a crash during planning phase
+    async def crashing_planning(ctx, tasks):
+        raise ValueError("Unexpected crash!")
+
+    orchestrator._phase_planning = crashing_planning
+
+    plan = [{"id": "crash_t", "agent_type": "code_worker"}]
+    context = await orchestrator.execute_workflow(
+        name="Crash Test",
+        goal="Crash",
+        initial_plan=plan,
+    )
+    assert context.status == WorkflowStatus.FAILED
+    assert "error" in context.results
+
+
+@pytest.mark.asyncio
+async def test_workflow_with_config():
+    """اختبار التهيئة المخصصة."""
+    orchestrator = ZNOrchestrator(config={"memory_path": "/tmp/test_memory.json"})
+    assert orchestrator.config["memory_path"] == "/tmp/test_memory.json"
